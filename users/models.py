@@ -26,6 +26,7 @@ class CustomUser(AbstractBaseUser):
 
     created_by = models.CharField(max_length=100, blank=True)
     is_active = models.BooleanField(default=True)
+    is_superuser = models.BooleanField(default=False)
 
     objects = CustomUserManager()
 

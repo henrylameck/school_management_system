@@ -153,6 +153,8 @@ AUTH_USER_MODEL = 'users.CustomUser'
 
 LOGOUT_REDIRECT_URL = 'users:login'
 
+LOGIN_URL = 'users:login'
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 

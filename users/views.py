@@ -2,12 +2,14 @@ from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.urls import reverse_lazy
 from django.utils.crypto import get_random_string
+from django.core.mail import EmailMessage
 from django.views.generic import TemplateView, FormView, DeleteView
-from django.contrib.auth.views import LoginView
+from django.template.loader import get_template
+from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.messages.views import SuccessMessageMixin
 
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin, PermissionDenied
 from django.contrib.auth import get_user_model
 
 from .forms import SignUpForm, CreateStaffForm, UpdateStaffForm
@@ -48,9 +50,10 @@ class Login(LoginView):
             return f'/admin/'
 
 
-class SignUp(FormView):
+class SignUp(LoginRequiredMixin, UserPassesTestMixin, FormView):
     template_name = 'users/signup.html'
     form_class = SignUpForm
+    permission_denied_message = 'Only Superuser has access to this page'
 
     def post(self, request, *args, **kwargs):
 
@@ -66,15 +69,29 @@ class SignUp(FormView):
 
             return redirect(to='users:login')
 
+    def test_func(self):
+        if self.request.user.is_superuser:
+            return True
+        return False
 
-class CreateStaff(FormView):
+
+class LogoutView(LogoutView):
+    template_name = 'registration/logout.html'
+
+
+class CreateStaff(LoginRequiredMixin, UserPassesTestMixin, FormView):
     template_name = 'users/create_staff.html'
     form_class = CreateStaffForm
+    permission_denied_message = 'Only Master has access to this page'
+
+    def test_func(self):
+        if self.request.user.role == 'master':
+            return True
+
 
     def get(self, request, *args, **kwargs):
 
-        staffs = User.objects.filter(
-            role != 'master', created_by=self.request.user).order_by('-pk')[:10]
+        staffs = User.objects.filter(created_by=self.request.user).order_by('-pk')
 
         context = {
             'form': self.form_class,
@@ -90,7 +107,7 @@ class CreateStaff(FormView):
         if form.is_valid():
 
             staff_obj = form.save(commit=False)
-            team_obj.created_by = self.request.user
+            staff_obj.created_by = self.request.user
 
             # Set default password
             staff_password = get_random_string(length=8)
@@ -106,7 +123,7 @@ class CreateStaff(FormView):
             #send Login credentials to team member email
             staff_email = form.cleaned_data['email']
             message = get_template(
-                'staff/login_credentials_email.html').render(
+                'users/login_credentials_email.html').render(
                 {
                     'email': staff_email,
                     'password':staff_password
@@ -122,10 +139,9 @@ class CreateStaff(FormView):
             messages.success(request, 'Success, Staff created',
                              extra_tags='alert alert-success')
 
-            return redirect(to='staff:create-staff')
+            return redirect(to='users:create-staff')
 
-        staffs = User.objects.filter(
-            role != 'master', created_by=self.request.user).order_by('-pk')[:10]
+        staffs = User.objects.filter(created_by=self.request.user).order_by('-pk')
 
         context = {
             'form': form,
@@ -138,9 +154,15 @@ class CreateStaff(FormView):
         return render(request, self.template_name, context=context)
 
 
-class UpdateStaff(FormView):
+
+class UpdateStaff(LoginRequiredMixin, UserPassesTestMixin, FormView):
     template_name = 'users/edit_staff.html'
     form_class = UpdateStaffForm
+    permission_denied_message = 'Only Master has access to this page'
+
+    def test_func(self):
+        if self.request.user.role == 'master':
+            return True
 
     def post(self, request, *args, **kwargs):
 
@@ -179,9 +201,14 @@ class UpdateStaff(FormView):
         return render(request, self.template_name, context=context)
 
 
-class DeleteStaff(DeleteView):
+class DeleteStaff(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = User
     template_name = 'users/comfirm_delete.html'
+    permission_denied_message = 'Only Master has access to this page'
+
+    def test_func(self):
+        if self.request.user.role == 'master':
+            return True
 
     def get_success_url(self):
 

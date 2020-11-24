@@ -23,5 +23,7 @@ class CustomUserManager(BaseUserManager):
             password=password,
             name=name,
         )
+        user.is_active = True
+        user.is_superuser = True
         user.save(using=self._db)
         return user

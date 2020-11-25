@@ -14,6 +14,7 @@ from django.contrib.auth import get_user_model
 
 from .forms import SignUpForm, CreateStaffForm, UpdateStaffForm
 from .models import Profile
+from master.models import School
 
 
 User = get_user_model()
@@ -29,7 +30,7 @@ class Login(LoginView):
         if url:
             return url
         elif self.request.user.role == 'master':
-            return reverse('/')
+            return reverse('master:dashboard')
         elif self.request.user.role == 'teacher':
             return reverse('/')
         elif self.request.user.role == 'secretary':
@@ -66,6 +67,10 @@ class SignUp(LoginRequiredMixin, UserPassesTestMixin, FormView):
             # create profile
             profile = Profile(user=user)
             profile.save()
+
+            #create school
+            school = School(master=user)
+            school.save()
 
             return redirect(to='users:login')
 

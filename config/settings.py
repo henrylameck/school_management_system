@@ -29,6 +29,8 @@ else:
 
 INSTALLED_APPS = [
     'users',
+    'master',
+    'classes',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -39,6 +41,8 @@ INSTALLED_APPS = [
 
     'crispy_forms',
     'widget_tweaks',
+    'django_countries',
+    'multiselectfield',
 ]
 
 MIDDLEWARE = [

@@ -34,9 +34,9 @@ class Department(models.Model):
 
     name = models.CharField(max_length=255, unique=True)
 
-    short_name = models.CharField('Department Short Form', 
-        max_length=10)
-    code = models.PositiveIntegerField()
+    short_name = models.CharField('Department Short Name', 
+        max_length=10, blank=True)
+    code = models.PositiveIntegerField(blank=True)
     # head = models.ForeignKey(
     #     Teacher, on_delete=models.CASCADE, blank=True, null=True)
     created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True)
@@ -54,12 +54,19 @@ class Department(models.Model):
 class AcademicSession(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
-
     year = models.PositiveIntegerField(unique=True)
+    is_closed = models.BooleanField(default=False, verbose_name='Close this Academic Year')
     created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True)
 
     def __str__(self):
         return '{} - {}'.format(self.year, self.year + 1)
+
+
+class AcademicYear(models.Model):
+    year = models.OneToOneField(AcademicSession, on_delete=models.CASCADE, verbose_name='Select Academic Year')
+
+    def __str__(self):
+        return str(self.year.academicsession)
 
 
 class Semester(models.Model):

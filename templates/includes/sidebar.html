@@ -9,27 +9,20 @@
 
                     <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-bank"></i><span class="hide-menu">Institution </span></a>
                         <ul aria-expanded="false" class="collapse  first-level">
-                            <li class="sidebar-item"><a href="{% url 'master:school-edit' request.user.school.id %}" class="sidebar-link"><i class="mdi mdi-tooltip-edit"></i><span class="hide-menu"> Edit Institute </span></a></li>
-                            <li class="sidebar-item"><a href="form-wizard.html" class="sidebar-link"><i class="mdi mdi-note-plus"></i><span class="hide-menu"> Academic year </span></a></li>
-                            <li class="sidebar-item"><a href="form-wizard.html" class="sidebar-link"><i class="mdi mdi-select"></i><span class="hide-menu"> Select academic year </span></a></li>
-                            <li class="sidebar-item"><a href="form-wizard.html" class="sidebar-link"><i class="mdi mdi-close"></i><span class="hide-menu"> Close Academic year </span></a></li>
-                            <li class="sidebar-item"><a href="form-wizard.html" class="sidebar-link"><i class="mdi mdi-settings"></i><span class="hide-menu"> Settings </span></a></li>
+                            <li class="sidebar-item"><a href="{% url 'master:school-edit' user.school.id %}" class="sidebar-link"><i class="mdi mdi-tooltip-edit"></i><span class="hide-menu"> Edit Institute </span></a></li>
+                            <li class="sidebar-item"><a href="{% url 'master:academic_sessions' %}" class="sidebar-link"><i class="mdi mdi-note-plus"></i><span class="hide-menu"> Academic year </span></a></li>
                         </ul>
                     </li>
 
                     <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-bank"></i><span class="hide-menu">Master </span></a>
                         <ul aria-expanded="false" class="collapse  first-level">
-                            <li class="sidebar-item"><a href="form-basic.html" class="sidebar-link"><i class="mdi mdi-tooltip-edit"></i><span class="hide-menu"> Manage school type </span></a></li>
-                            <li class="sidebar-item"><a href="form-wizard.html" class="sidebar-link"><i class="mdi mdi-delete"></i><span class="hide-menu"> Manage class sequence </span></a></li>
-                            <li class="sidebar-item"><a href="form-wizard.html" class="sidebar-link"><i class="mdi mdi-note-plus"></i><span class="hide-menu"> Create Subject </span></a></li>
-                            <li class="sidebar-item"><a href="form-wizard.html" class="sidebar-link"><i class="mdi mdi-select"></i><span class="hide-menu"> Manage class syllabus </span></a></li>
-                            <li class="sidebar-item"><a href="form-wizard.html" class="sidebar-link"><i class="mdi mdi-close"></i><span class="hide-menu"> Elective subject mapping </span></a></li>
-                            <li class="sidebar-item"><a href="form-wizard.html" class="sidebar-link"><i class="mdi mdi-settings"></i><span class="hide-menu"> Create Department </span></a></li>
-                            <li class="sidebar-item"><a href="form-wizard.html" class="sidebar-link"><i class="mdi mdi-settings"></i><span class="hide-menu"> Create Category </span></a></li>
-                            <li class="sidebar-item"><a href="form-wizard.html" class="sidebar-link"><i class="mdi mdi-settings"></i><span class="hide-menu"> Category seat Settings </span></a></li>
-                            <li class="sidebar-item"><a href="form-wizard.html" class="sidebar-link"><i class="mdi mdi-settings"></i><span class="hide-menu"> Create Notices </span></a></li>
-                            <li class="sidebar-item"><a href="form-wizard.html" class="sidebar-link"><i class="mdi mdi-settings"></i><span class="hide-menu"> Master Reports </span></a></li>
-                            <li class="sidebar-item"><a href="form-wizard.html" class="sidebar-link"><i class="mdi mdi-settings"></i><span class="hide-menu"> Users/Staffs </span></a></li>
+                            <li class="sidebar-item"><a href="{% url 'master:create-department' %}" class="sidebar-link"><i class="mdi mdi-delete"></i><span class="hide-menu"> Manage Departments </span></a></li>
+                            <li class="sidebar-item"><a href="{% url 'classes:create-stream' %}" class="sidebar-link"><i class="mdi mdi-note-plus"></i><span class="hide-menu"> Manage Streams </span></a></li>
+                            <li class="sidebar-item"><a href="{% url 'classes:class_list' %}" class="sidebar-link"><i class="mdi mdi-note-plus"></i><span class="hide-menu"> Manage Classes </span></a></li>
+                            <li class="sidebar-item"><a href="{% url 'classes:create-subject' %}" class="sidebar-link"><i class="mdi mdi-note-plus"></i><span class="hide-menu"> Manage Subjects </span></a></li>
+                            <li class="sidebar-item"><a href="{% url 'classes:create-syllabus' %}" class="sidebar-link"><i class="mdi mdi-select"></i><span class="hide-menu"> Manage class syllabus </span></a></li>
+                            <li class="sidebar-item"><a href="{% url 'users:create-staff' %}" class="sidebar-link"><i class="mdi mdi-settings"></i><span class="hide-menu"> Users/Staffs </span></a></li>
+                            <li class="sidebar-item"><a href="#" class="sidebar-link"><i class="mdi mdi-settings"></i><span class="hide-menu"> Master Reports </span></a></li>
                         </ul>
                     </li>
                 </ul>

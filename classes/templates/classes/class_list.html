@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+{% block content %}
+  <h2 class="page-header">All Classes</h2>
+
+  <p>
+    <button type="button" class="btn btn-primary js-create-class" data-url="{% url 'classes:class_create' %}">
+      <i class="fa fa-plus-circle mr-2"></i>
+      New class
+    </button>
+  </p>
+
+  <table class="table" id="book-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Seats</th>
+        <th>Class Teacher</th>
+        <th>Class Leaders</th>
+        <th>Created By</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% include 'classes/includes/partial_class_list.html' %}
+    </tbody>
+  </table>
+
+  <div class="modal fade" id="modal-class">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block javascript %}
+<script src="{% static 'classes/js/classes.js' %}"></script>
+{% endblock javascript %}

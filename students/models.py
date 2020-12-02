@@ -223,3 +223,4 @@ class FeeCollection(models.Model):
 
     def __str__(self):
         return self.payment_mode
+

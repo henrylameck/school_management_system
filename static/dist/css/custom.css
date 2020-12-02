@@ -1,0 +1,10 @@
+.form-control {
+    color: #101011;
+    border: 1px solid #7f7f81;
+    border-radius: 3px;
+}
+
+.form-head{
+    background-color:rgb(214, 142, 7);
+    padding: 0 0 4px 0;
+}

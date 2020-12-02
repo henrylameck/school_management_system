@@ -179,7 +179,7 @@ class Hostelallocation(models.Model):
 
     gender = models.CharField(max_length=20, choices=GENDER)
     date = models.DateField(verbose_name='Allocation Date')
-    hostel_name = models.CharField(max_lenght=200, verbose_name='Hostel Name')
+    hostel_name = models.CharField(max_length=200, verbose_name='Hostel Name')
     block_name = models.CharField(max_length=200, verbose_name='Block Name')
     room_name = models.CharField(max_length=200, verbose_name='Room Name')
 

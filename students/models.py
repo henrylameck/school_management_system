@@ -112,6 +112,7 @@ class PersonalDetails(models.Model):
     student_type =models.CharField(max_length=20, verbose_name='Student Type', choices=STUDENT_TYPE)
     passport = models.ImageField(upload_to='passport', verbose_name='Upload Passport')
     
+    #end
     
     def __str__(self):
         return self.first_name + '' + self.last_name

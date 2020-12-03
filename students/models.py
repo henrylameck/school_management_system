@@ -221,5 +221,15 @@ class FeeCollection(models.Model):
     receipt = models.CharField(max_length=200)
     reg_fee_amount = models.CharField(max_length=200)
 
+class StudentRegistration(models.Model):
+    personal_details = models.ForeignKey(PersonalDetails,on_delete=models.PROTECT)
+    student_admission = models.ForeignKey(StudentAdmission,on_delete=models.PROTECT)
+    personal_contact_detail= models.ForeignKey(PersonalContactDetail,on_delete=models.PROTECT)
+    transport_allocation= models.ForeignKey(TransportAllocation,on_delete=models.PROTECT)
+    hostel_allocation= models.ForeignKey(HostelAllocation,on_delete=models.PROTECT)
+    qualification= models.ForeignKey(Qualification,on_delete=models.PROTECT)
+    feecollection= models.ForeignKey(FeeCollection,on_delete=models.PROTECT)
+
     def __str__(self):
-        return self.payment_mode
+        return self.personal_details.first_name
+

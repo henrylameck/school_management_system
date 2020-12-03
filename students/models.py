@@ -1,3 +1,4 @@
+from datetime import date
 from django.db import models
 from django_countries.fields import CountryField
 from django.contrib.auth import get_user_model
@@ -258,24 +259,24 @@ class Attendances(models.Model):
     modified_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True)
 
-	student = models.ForeignKey(StudentRegistration, on_delete=models.CASCADE, related_name='student_attendance')
-	type = models.IntegerField(choices=ATTENDANCES_TYPE, default=0)
-	motif = models.TextField(null=True, blank=True) # REM.: should have been "reason"; redundant with "justification" fiel
-	is_excused = models.BooleanField(default=False)
-	justification = models.TextField(null=True, blank=True)
-	document = models.FileField(related_name='document_attendance', null=True, blank=True)
-	start_date = models.DateField(null=True, default=date.today)
-	finish_date = models.DateField(null=True, blank=True)
-	comment = models.CharField(max_length=255, null=True, blank=True) # Free text
+    student = models.ForeignKey(StudentRegistration, on_delete=models.CASCADE, verbose_name='student_attendance')
+    type = models.IntegerField(choices=ATTENDANCES_TYPE, default=0)
+    motif = models.TextField(null=True, blank=True) # REM.: should have been "reason"; redundant with "justification" fiel
+    is_excused = models.BooleanField(default=False)
+    justification = models.TextField(null=True, blank=True)
+    document = models.FileField(verbose_name='document_attendance', null=True, blank=True)
+    start_date = models.DateField(null=True, default=date.today)
+    finish_date = models.DateField(null=True, blank=True)
+    comment = models.CharField(max_length=255, null=True, blank=True) # Free text
     
 	
-	def __str__(self):
-		return '{0} - {1}'.format(self.student, self.type)
-		
-	class Meta:
-		ordering = ('-start_date','-modified_at',)
-		verbose_name = _("Attendance")
-		verbose_name_plural = _("Attendances")
+    def __str__(self):
+        return '{0} - {1}'.format(self.student, self.type)
+        
+    class Meta:
+        ordering = ('-start_date','-modified_at',)
+        verbose_name = "Attendance"
+        verbose_name_plural = "Attendances"
 
 
 class Discipline_type(models.Model):	
@@ -283,23 +284,23 @@ class Discipline_type(models.Model):
     modified_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True)
 
-	punishment = models.CharField(max_length=100, null=True)
-	start_date = models.BooleanField(default=True)
-	end_date = models.BooleanField(default=True)
-	start_time = models.BooleanField(default=True)
-	end_time = models.BooleanField(default=False)
-	repeatable = models.BooleanField(default=True)
-	alert = models.PositiveSmallIntegerField(default=0)
-	description = models.CharField(max_length=255, null=True, blank=True)
-	comment = models.CharField(max_length=255, null=True, blank=True) # Free text
-	
-	def __str__(self):
-		return '{0}'.format(self.punishment)
-	
-	class Meta:
-		ordering = ('punishment',)
-		verbose_name = _("Discipline's type")
-		verbose_name_plural = _("Discipline's types")
+    punishment = models.CharField(max_length=100, null=True)
+    start_date = models.BooleanField(default=True)
+    end_date = models.BooleanField(default=True)
+    start_time = models.BooleanField(default=True)
+    end_time = models.BooleanField(default=False)
+    repeatable = models.BooleanField(default=True)
+    alert = models.PositiveSmallIntegerField(default=0)
+    description = models.CharField(max_length=255, null=True, blank=True)
+    comment = models.CharField(max_length=255, null=True, blank=True) # Free text
+
+    def __str__(self):
+        return '{0}'.format(self.punishment)
+
+    class Meta:
+        ordering = ('punishment',)
+        verbose_name = "Discipline's type"
+        verbose_name_plural = "Discipline's types"
 
 
 STATUS = (
@@ -316,22 +317,22 @@ class Disciplines(models.Model):
     modified_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True)
 
-	type = models.ForeignKey(to='Discipline_type', on_delete=models.SET_NULL, related_name='discipline_type', null=True, blank=True, default=1)
-	student = models.ForeignKey(StudentRegistration, on_delete=models.CASCADE, related_name='student_discipline')
-	motif = TextField(null=True, blank=True)
-	fact_date = models.DateField(null=True, blank=True, default=date.today)
-	status = models.IntegerField(choices=STATUS, default=ACTIVE, null=True, blank=True)
-	location = models.CharField(max_length=100, null=True, blank=True) 
-	comment = models.CharField(max_length=255, null=True, blank=True) # Free text
+    type = models.ForeignKey(to='Discipline_type', on_delete=models.SET_NULL, verbose_name='discipline_type', null=True, blank=True, default=1)
+    student = models.ForeignKey(StudentRegistration, on_delete=models.CASCADE, verbose_name='student_discipline')
+    motif = models.TextField(null=True, blank=True)
+    fact_date = models.DateField(null=True, blank=True, default=date.today)
+    status = models.CharField(max_length=200, choices=STATUS, default='Active', null=True, blank=True)
+    location = models.CharField(max_length=100, null=True, blank=True) 
+    comment = models.CharField(max_length=250, null=True, blank=True) # Free text
 
-	
-	def __str__(self):
-		return '{0}'.format(self.type)
-	
-	class Meta:
-		ordering = ('-fact_date',)
-		verbose_name = _('Discipline')
-		verbose_name_plural = _('Disciplines')	
+
+    def __str__(self):
+        return '{0}'.format(self.type)
+
+    class Meta:
+        ordering = ('-fact_date',)
+        verbose_name = 'Discipline'
+        verbose_name_plural = 'Disciplines'	
 
 
 class Disciplines_Details(models.Model):
@@ -339,18 +340,18 @@ class Disciplines_Details(models.Model):
     modified_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True)
 
-	discipline = models.ForeignKey(to='Disciplines', on_delete=models.CASCADE, related_name='discipline_detail')
-	start_date = models.DateField(null=True, blank=True)
-	start_time = models.TimeField(null=True, blank=True)
-	finish_date = models.DateField(null=True, blank=True)
-	finish_time = models.TimeField(null=True, blank=True)
-	description = models.TextField(null=True, blank=True)
-	
-	
-	def __str__(self):
-		return '{0}'.format(self.id)
-		
-	class Meta:
-		verbose_name = _('Discipline details')
-		verbose_name_plural = _('Disciplines details')
-		
+    discipline = models.ForeignKey(to='Disciplines', on_delete=models.CASCADE, verbose_name='discipline_detail')
+    start_date = models.DateField(null=True, blank=True)
+    start_time = models.TimeField(null=True, blank=True)
+    finish_date = models.DateField(null=True, blank=True)
+    finish_time = models.TimeField(null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+
+
+    def __str__(self):
+        return '{0}'.format(self.id)
+        
+    class Meta:
+        verbose_name = 'Discipline details'
+        verbose_name_plural = 'Disciplines details'
+        

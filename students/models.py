@@ -89,6 +89,14 @@ STUDENT_TYPE = (
     ('school bus', 'School Bus')
 )
 
+ATTENDANCES_TYPE = (
+    ('', 'Please select'),
+    ('present', 'Present'),
+    ('absent', 'Absent')
+
+)
+
+
 class PersonalDetails(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
@@ -221,6 +229,7 @@ class FeeCollection(models.Model):
     receipt = models.CharField(max_length=200)
     reg_fee_amount = models.CharField(max_length=200)
 
+
 class StudentRegistration(models.Model):
     personal_details = models.ForeignKey(PersonalDetails,on_delete=models.PROTECT)
     student_admission = models.ForeignKey(StudentAdmission,on_delete=models.PROTECT)
@@ -230,6 +239,118 @@ class StudentRegistration(models.Model):
     qualification= models.ForeignKey(Qualification,on_delete=models.PROTECT)
     feecollection= models.ForeignKey(FeeCollection,on_delete=models.PROTECT)
 
-    def __str__(self):
-        return self.personal_details.first_name
+class EnrolledStudent(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True)
+    
+    class_name = models.ForeignKey(Class, on_delete=models.DO_NOTHING, null=True)
+    stream = models.ForeignKey(Stream, on_delete=models.DO_NOTHING, null=True)
+    student = models.ForeignKey(StudentRegistration,on_delete=models.PROTECT)
+    roll = models.IntegerField()
 
+    def __str__(self):
+        return self.student
+
+
+class Attendances(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True)
+
+	student = models.ForeignKey(StudentRegistration, on_delete=models.CASCADE, related_name='student_attendance')
+	type = models.IntegerField(choices=ATTENDANCES_TYPE, default=0)
+	motif = models.TextField(null=True, blank=True) # REM.: should have been "reason"; redundant with "justification" fiel
+	is_excused = models.BooleanField(default=False)
+	justification = models.TextField(null=True, blank=True)
+	document = models.FileField(related_name='document_attendance', null=True, blank=True)
+	start_date = models.DateField(null=True, default=date.today)
+	finish_date = models.DateField(null=True, blank=True)
+	comment = models.CharField(max_length=255, null=True, blank=True) # Free text
+    
+	
+	def __str__(self):
+		return '{0} - {1}'.format(self.student, self.type)
+		
+	class Meta:
+		ordering = ('-start_date','-modified_at',)
+		verbose_name = _("Attendance")
+		verbose_name_plural = _("Attendances")
+
+
+class Discipline_type(models.Model):	
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True)
+
+	punishment = models.CharField(max_length=100, null=True)
+	start_date = models.BooleanField(default=True)
+	end_date = models.BooleanField(default=True)
+	start_time = models.BooleanField(default=True)
+	end_time = models.BooleanField(default=False)
+	repeatable = models.BooleanField(default=True)
+	alert = models.PositiveSmallIntegerField(default=0)
+	description = models.CharField(max_length=255, null=True, blank=True)
+	comment = models.CharField(max_length=255, null=True, blank=True) # Free text
+	
+	def __str__(self):
+		return '{0}'.format(self.punishment)
+	
+	class Meta:
+		ordering = ('punishment',)
+		verbose_name = _("Discipline's type")
+		verbose_name_plural = _("Discipline's types")
+
+
+STATUS = (
+    ('active', 'Active'),
+    ('inactive', 'Inactive'),
+    ('done', 'Done'),
+    ('cancelled', 'cancelled')
+
+)
+
+
+class Disciplines(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True)
+
+	type = models.ForeignKey(to='Discipline_type', on_delete=models.SET_NULL, related_name='discipline_type', null=True, blank=True, default=1)
+	student = models.ForeignKey(StudentRegistration, on_delete=models.CASCADE, related_name='student_discipline')
+	motif = TextField(null=True, blank=True)
+	fact_date = models.DateField(null=True, blank=True, default=date.today)
+	status = models.IntegerField(choices=STATUS, default=ACTIVE, null=True, blank=True)
+	location = models.CharField(max_length=100, null=True, blank=True) 
+	comment = models.CharField(max_length=255, null=True, blank=True) # Free text
+
+	
+	def __str__(self):
+		return '{0}'.format(self.type)
+	
+	class Meta:
+		ordering = ('-fact_date',)
+		verbose_name = _('Discipline')
+		verbose_name_plural = _('Disciplines')	
+
+
+class Disciplines_Details(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True)
+
+	discipline = models.ForeignKey(to='Disciplines', on_delete=models.CASCADE, related_name='discipline_detail')
+	start_date = models.DateField(null=True, blank=True)
+	start_time = models.TimeField(null=True, blank=True)
+	finish_date = models.DateField(null=True, blank=True)
+	finish_time = models.TimeField(null=True, blank=True)
+	description = models.TextField(null=True, blank=True)
+	
+	
+	def __str__(self):
+		return '{0}'.format(self.id)
+		
+	class Meta:
+		verbose_name = _('Discipline details')
+		verbose_name_plural = _('Disciplines details')
+		

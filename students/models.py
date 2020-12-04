@@ -238,7 +238,7 @@ class StudentRegistration(models.Model):
     transport_allocation= models.ForeignKey(TransportAllocation,on_delete=models.PROTECT)
     hostel_allocation= models.ForeignKey(HostelAllocation,on_delete=models.PROTECT)
     qualification= models.ForeignKey(Qualification,on_delete=models.PROTECT)
-    feecollection= models.ForeignKey(FeeCollection,on_delete=models.PROTECT)
+    feecollection= models.ForeignKeygit(FeeCollection,on_delete=models.PROTECT)
 
 class EnrolledStudent(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)

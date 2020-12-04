@@ -10,10 +10,24 @@ from django.contrib import messages
 from django.forms.models import construct_instance
 
 from .forms import *
+from .models import *
+
+def get_fee_total(request):
+    reg_fee = request.GET.get('reg_fee')
+    vehicle_fee = request.GET.get('vehicle_fee')
+
+    total = int(reg_fee) + int(vehicle_fee)
+
+    context = {
+        'total': total,
+    }
+
+    return render(request, 'students/total_fee.html', context)
+
+
 
 
 FORMS = [
-    ('student_admission', StudentAdmissionForm),
     ('personal_detail', PersonalDetailsForm),
     ('person_contact_detail', PersonalContactDetailForm),
     ('transport_allocation', TransportAllocationForm),
@@ -23,13 +37,12 @@ FORMS = [
 ]
 
 TEMPLATES = {
-    'personal_detail': 'students/add_student.html',
-    'student_admission': 'students/add_student.html',
-    'person_contact_detail': 'students/add_student.html',
-    'transport_allocation': 'students/add_student.html',
+    'personal_detail': 'students/personal_detail.html',
+    'person_contact_detail': 'students/personal_contact_detail.html',
+    'transport_allocation': 'students/transport_allocation.html',
     'hostel_allocation': 'students/add_student.html',
     'qualification': 'students/add_student.html',
-    'fee_collection': 'students/add_student.html',
+    'fee_collection': 'students/fee_collection.html',
 }
 
 
@@ -41,10 +54,8 @@ class StudentRegistrationView(SessionWizardView):
 
     def get_context_data(self, form, **kwargs):
         context = super().get_context_data(form=form, **kwargs)
-        if self.steps.current == 'student_admission':
-            context.update({'another_var': 'Student admission'})
-        elif self.steps.current == 'personal_detail':
-            context.update({'another_var': 'Personal Details'})
+        if self.steps.current == 'personal_detail':
+            context.update({'another_var': 'Student Details'})
         elif self.steps.current == 'person_contact_detail':
             context.update({'another_var': 'Personal Contact Details'})
         elif self.steps.current == 'transport_allocation':
@@ -59,24 +70,29 @@ class StudentRegistrationView(SessionWizardView):
 
     def done(self, form_list, **kwargs):
 
-        student_admission_instance = StudentAdmission()
         personal_details_instance = PersonalDetails()
         personal_contact_instance = PersonalContactDetail()
         transport_allocation_instance = TransportAllocation()
         hostel_allocation_instance = HostelAllocation()
         qualification_instance = Qualification()
         fee_collection_instance = FeeCollection()
+        student_registration_instance = StudentRegistration()
 
-        student_admission_instance.created_by = self.request.user
-        personal_details_instance.created_by = self.request.user
-        personal_contact_instance.created_by = self.request.user
-        transport_allocation_instance.created_by = self.request.user
-        hostel_allocation_instance.created_by = self.request.user
-        qualification_instance.created_by = self.request.user
-        fee_collection_instance.created_by = self.request.user
+        student_registration_instance.created_by = self.request.user
+
+        student_registration_instance.personal_details = personal_details_instance
+
+        student_registration_instance.personal_contact_detail = personal_contact_instance
+
+        student_registration_instance.transport_allocation = transport_allocation_instance
+
+        student_registration_instance.hostel_allocation = hostel_allocation_instance
+
+        student_registration_instance.qualification = qualification_instance
+
+        student_registration_instance.feecollection = fee_collection_instance
 
         for form in form_list:
-            student_admission_instance = construct_instance(form, student_admission_instance, form._meta.fields, form._meta.exclude)
 
             personal_details_instance = construct_instance(form, personal_details_instance, form._meta.fields, form._meta.exclude)
 
@@ -90,13 +106,15 @@ class StudentRegistrationView(SessionWizardView):
 
             fee_collection_instance = construct_instance(form, fee_collection_instance, form._meta.fields, form._meta.exclude)
 
-        student_admission_instance.save()
+            student_registration_instance = construct_instance(form, student_registration_instance, form._meta.fields, form._meta.exclude)
+
         personal_details_instance.save()
         personal_contact_instance.save()
         transport_allocation_instance.save()
         hostel_allocation_instance.save()
         qualification_instance.save()
         fee_collection_instance.save()
+        student_registration_instance.save()
 
         return render(self.request, 'students/done.html', {
             'form_data': [form.cleaned_data for form in form_list],

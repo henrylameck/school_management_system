@@ -48,7 +48,7 @@ class Login(LoginView):
         elif self.request.user.role == 'vehicle':
             return reverse('/')
         else:
-            return f'/admin/'
+            return f'admin'
 
 
 class SignUp(LoginRequiredMixin, UserPassesTestMixin, FormView):
@@ -72,7 +72,7 @@ class SignUp(LoginRequiredMixin, UserPassesTestMixin, FormView):
             school = School(master=user)
             school.save()
 
-            return redirect(to='users:login')
+            return redirect('users:login')
 
     def test_func(self):
         if self.request.user.is_superuser:

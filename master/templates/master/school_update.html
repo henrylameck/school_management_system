@@ -13,7 +13,7 @@
 
             {% include 'messages.html' %}
 
-            <form method="POST" action="">
+            <form method="POST" action="." enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="card">
                     <div class="form-head">

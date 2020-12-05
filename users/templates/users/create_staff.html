@@ -2,29 +2,15 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-    <nav class="navbar navbar-expand-lg context-bar">
-      <a class="navbar-brand" href="#">
-          <i class="fa fa-users"></i> Staff
-      </a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav ml-auto">
-          <a class="nav-item nav-link" href="">
-              <i class="fa fa-list"></i> View</a>
-        </div>
-      </div>
-    </nav>
-
+    
     {% include 'messages.html' %}
     
 
     <div class="row">
         <div class="col-md-4">
             <div class="card">
-                <div class="card-header">
-                    <h5 class="">Add New Staff</h5>
+                <div class="card-header bg-warning">
+                    <h5>Add New Staff</h5>
                 </div>
                 <div class="card-body">
                     <form action="{% url 'users:create-staff' %}" method="post">{% csrf_token %}
@@ -38,8 +24,8 @@
         </div>
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">
-                    <h5 class="">All Staffs</h5>
+                <div class="card-header bg-warning">
+                    <h5>All Staffs</h5>
                 </div>
                 <div class="card-body">
                     {% if staffs|length > 0 %}

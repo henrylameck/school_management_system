@@ -1,10 +1,9 @@
 {% for class in classes %}
   <tr>
     <td>{{ forloop.counter }}</td>
-          <td>{{ class.name }} {{ class.stream }}</td>
+          <td>{{ class.name }}</td>
           <td>{{ class.seat }}</td>
-          <td></td>
-          <td></td>
+          <td>{{ class.stream }}</td> 
           <td>{{ class.created_by }}</td>
     <td style="width: 150px">
       <button type="button"

@@ -1,3 +1,4 @@
+import random
 from datetime import date
 from django.db import models
 from django_countries.fields import CountryField
@@ -239,19 +240,26 @@ class StudentRegistration(models.Model):
     def __str__(self):
         return str(self.personal_details.first_name + " " + self.personal_details.last_name)
 
+def random_string():
+    last_roll = StudentAdmission.objects.all().order_by('id').last()
+    if not last_roll:
+        return '1'
+    roll = last_roll.roll
+    new_roll = int(roll) + 1
+    return new_roll
 
 class StudentAdmission(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True)
 
-    student = models.ForeignKey(StudentRegistration,on_delete=models.PROTECT)
-    reg_no = models.CharField(max_length=100, verbose_name='Admission No:', blank=True, null=True)
+    student = models.OneToOneField(StudentRegistration,on_delete=models.PROTECT)
+    reg_no = models.CharField(max_length=100, verbose_name='Registration No:', unique=True)
     date = models.DateField(verbose_name='Admission date')
-    application_form_no = models.CharField(max_length=100, verbose_name='Application Form No:')
+    application_form_no = models.CharField(max_length=100, verbose_name='Application Form No:', unique=True)
     class_name = models.ForeignKey(Class, on_delete=models.DO_NOTHING, null=True)
     stream = models.ForeignKey(Stream, on_delete=models.DO_NOTHING, null=True)
-    roll = models.IntegerField()
+    roll = models.CharField(max_length=50, default=random_string)
 
     def __str__(self):
         return self.reg_no

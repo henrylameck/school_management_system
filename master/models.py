@@ -21,8 +21,7 @@ class School(models.Model):
     email = models.EmailField()
     district = models.CharField(max_length=100)
     region = models.CharField(max_length=100)
-    starting_date = models.DateField(auto_now_add=True)
-    logo = models.ImageField(upload_to='logo', verbose_name='Upload school logo')
+    logo = models.ImageField(upload_to='logo', verbose_name='Upload school logo', default='images_4.png')
 
     def __str__(self):
         return self.name

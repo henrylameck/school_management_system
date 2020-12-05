@@ -3,10 +3,21 @@
 {% block content %}
 
     <div class='container mt-5'>
-        <form method="post">{% csrf_token %} 
-            <h5>Are you sure you want to delete "{{ object }}"?</h5> 
-            <input class="btn btn-danger mt-2" type="submit" value="Confirm"> 
-        </form> 
+        <div class="row">
+            <div class="col-md-8 col-offset-6">
+                <div class="card">
+                    <div class="card-header bg-primary">
+                        <h3 class="text-light">Delete Confirmation</h3>
+                    </div>
+                    <div class="card-bogy">
+                        <form method="post">{% csrf_token %} 
+                            <h5 class="m-2">Are you sure you want to delete "{{ object }}"?</h5> 
+                            <input class="btn btn-danger m-2 btn-ld" type="submit" value="Confirm"> 
+                        </form> 
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 {% endblock %}

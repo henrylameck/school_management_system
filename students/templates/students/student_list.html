@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block javascript %}
+  <script src="{% static 'students/js/students.js' %}"></script>
+{% endblock javascript %}
+
+{% block content %}
+  <p>
+    <button type="button" class="btn btn-primary js-create-student" data-url="{% url 'students:student_create' %}">
+      <i class="fa fa-plus-circle mr-2"></i>
+      New Student
+    </button>
+  </p>
+
+  <div class="card">
+    <div class="card-header">
+      <h3>Students</h3>
+    </div>
+    <div class="card-body">
+      <table class="table" id="book-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Class</th>
+            <th>Stream</th>
+            <th>Reg no.</th>
+            <th>roll</th>
+            <th>form no.</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% include 'students/includes/partial_student_list.html' %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="modal fade" id="modal-student">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+      </div>
+    </div>
+  </div>
+{% endblock %}

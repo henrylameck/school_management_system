@@ -185,7 +185,7 @@ def save_class_form(request, form, template_name):
     context = {'form': form}
     data['html_form'] = render_to_string(template_name, context, request=request)
     return JsonResponse(data)
-
+ 
 
 def class_create(request):
     if request.method == 'POST':

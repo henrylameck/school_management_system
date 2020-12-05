@@ -1,0 +1,13 @@
+<form method="post" action="{% url 'students:student_create' %}" class="js-student-create-form">
+  {% csrf_token %}
+  <div class="modal-header bg-primary">
+    <h4 class="modal-title text-light">Admit New Student</h4>
+  </div>
+  <div class="modal-body">
+    {% include 'students/includes/partial_student_form.html' %}
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    <button type="submit" class="btn btn-primary">Admit Student</button>
+  </div>
+</form>

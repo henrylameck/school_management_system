@@ -21,10 +21,30 @@ class PersonalDetailsForm(forms.ModelForm):
 
 
 class StudentAdmissionForm(forms.ModelForm):
+    date = forms.DateField(label='Admission Date', initial=date.today,
+    widget=forms.TextInput(     
+        attrs={'type': 'date'} 
+        )
+    )
 
     class Meta:
         model = StudentAdmission
         exclude = ['created_by',]
+
+    def __init__(self, *args, **kwargs):
+        super(StudentAdmissionForm, self).__init__(*args, **kwargs)
+        self.fields['roll'].disabled = True
+
+    # def clean_roll(self):
+    #     new_student = self.cleaned_data['student']
+    #     students = StudentAdmission.objects.all()
+
+    #     for std in students:
+    #         old_students = std.student
+    #     if new_student == old_students:
+    #         raise forms.ValidationError('The student already admitted')
+    #     return roll
+
 
 
 class PersonalContactDetailForm(forms.ModelForm):

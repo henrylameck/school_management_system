@@ -1,0 +1,43 @@
+{% load widget_tweaks %}
+{% load crispy_forms_tags %}
+
+<div class="form-row">
+  <div class="form-group col-md-6 mb-0">
+
+    <label>Select Student *</label>
+    {{form.student|add_class:'select2 form-control custom-select'}}
+    {% for error in form.student.errors %}
+        <small class="help-block text-danger">{{ error }}</small>
+    {% endfor %}
+
+  </div>
+  <div class="form-group col-md-6 mb-0">
+      {{ form.date|as_crispy_field }}
+    </div>
+</div>
+
+<div class="form-row">
+  <div class="form-group col-md-6 mb-0">
+    {{ form.reg_no|as_crispy_field }}
+  </div>
+  <div class="form-group col-md-6 mb-0">
+    {{ form.application_form_no|as_crispy_field }}
+    </div>
+</div>
+
+<div class="form-row">
+  <div class="form-group col-md-6 mb-0">
+    {{ form.class_name|as_crispy_field }}
+  </div>
+  <div class="form-group col-md-6 mb-0">
+    {{ form.stream|as_crispy_field }}
+    </div>
+</div>
+
+{{ form.roll|as_crispy_field }}
+
+
+<script>
+  // For select 2
+  $(".select2").select2();
+</script>

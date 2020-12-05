@@ -1,5 +1,7 @@
 import os
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
+from django.http import JsonResponse
+from django.template.loader import render_to_string
 from django.urls import reverse
 from formtools.wizard.views import SessionWizardView
 from django.http import HttpResponseRedirect
@@ -126,3 +128,35 @@ class StudentRegistrationView(SessionWizardView):
             return self.render(self.get_form())
         except KeyError:
             return super().get(request, *args, **kwargs)
+
+
+def student_list(request):
+    students = StudentAdmission.objects.all().order_by('-created_at')
+    return render(request, 'students/student_list.html', {'students': students})
+
+
+def save_student_form(request, form, template_name):
+    data = dict()
+    if request.method == 'POST':
+        if form.is_valid():
+            student_obj = form.save(commit=False)
+            student_obj.created_by = request.user
+            student_obj.save()
+            data['form_is_valid'] = True
+            students = StudentAdmission.objects.all()
+            data['html_student_list'] = render_to_string('students/includes/partial_student_list.html', {
+                'students': students
+            })
+        else:
+            data['form_is_valid'] = False
+    context = {'form': form}
+    data['html_form'] = render_to_string(template_name, context, request=request)
+    return JsonResponse(data)
+
+
+def student_create(request):
+    if request.method == 'POST':
+        form = StudentAdmissionForm(request.POST)
+    else:
+        form = StudentAdmissionForm()
+    return save_student_form(request, form, 'students/includes/partial_student_create.html')

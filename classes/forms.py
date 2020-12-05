@@ -13,7 +13,7 @@ class ClassForm(forms.ModelForm):
 
     class Meta:
         model = Class
-        fields = ('name', 'stream', 'seat',)
+        fields = ('name', 'stream', 'seat', 'leaders',)
 
 
 class SubjectForm(forms.ModelForm):

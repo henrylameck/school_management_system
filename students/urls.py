@@ -8,4 +8,5 @@ app_name = 'students'
 
 urlpatterns = [
     path('registration/', views.StudentRegistrationView.as_view(FORMS), name='student-registration'),
+    path('get-total-fee/', views.get_fee_total, name='get_total_fee')
 ]

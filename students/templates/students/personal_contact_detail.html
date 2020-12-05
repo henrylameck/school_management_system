@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'main/css/bootstrap.min.css' %}">
+{{ wizard.form.media }}
+{% endblock head %}
+
+
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-warning">
+                <h4 class="">
+                    {{another_var}}
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                        {{ wizard.management_form }}
+
+                        <div class="form-row">
+                            <div class="form-group col-md-6 mb-0">
+                            <h4 class="text-primary">Permanent Address</h4>
+                              {{ form.p_address|as_crispy_field }}
+                              {{ form.p_postal_code|as_crispy_field }}
+                              {{ form.p_phone|as_crispy_field }}
+                              {{ form.student_email|as_crispy_field }}
+                            </div>
+                            <div class="form-group col-md-6 mb-0">
+                                <h4 class="text-primary">Present Address</h4>
+                                {{ form.pr_address|as_crispy_field }}
+                                {{ form.pr_postal_code|as_crispy_field }}
+                                {{ form.pr_phone|as_crispy_field }}
+                                {{ form.parent_email|as_crispy_field }}
+                              </div>
+                          </div>
+            
+                    {% if wizard.steps.prev %}
+                    <button class="btn btn-info btn-lg" name="wizard_goto_step" type="submit" value="{{ wizard.steps.first }}">{% trans "Back" %}</button>
+                    {% else %}
+                    <button class="btn btn-secondary btn-lg" name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">{% trans "Next" %}</button>
+                    {% endif %}
+                    <input class="btn btn-primary btn-lg" type="submit" value="{% trans "Save & Continue" %}"/>
+                  </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2"></div>
+  </div>
+</div>
+
+{% endblock %}

@@ -22,7 +22,7 @@ class Class(models.Model):
     modified_at = models.DateTimeField(auto_now=True)
     name = models.CharField(max_length=20)
     # class_teacher = models.OneToOneField(Teacher, on_delete=models.SET_NULL, null=True)
-    #leaders = models.ManyToManyField(Student)
+    leaders = models.ManyToManyField("students.StudentRegistration")
     seat = models.PositiveIntegerField(verbose_name='No of seats')
     stream = models.ForeignKey(Stream, on_delete=models.SET_NULL, null=True)
 

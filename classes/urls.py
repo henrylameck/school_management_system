@@ -9,10 +9,12 @@ urlpatterns = [
     
     path('create-stream/', views.CreateStream.as_view(), name='create-stream'),
     path('stream/<int:pk>/delete/', views.DeleteStream.as_view(), name='delete-stream'),
+
     path('create-subject/', views.CreateSubject.as_view(), name='create-subject'),
+    
     path('subject/<int:pk>/delete/', views.DeleteSubject.as_view(), name='delete-subject'),
-    path('create-syllabus/', views.CreateClassSyllabus.as_view(), name='create-syllabus'),
-    path('syllabus/<int:pk>/delete/', views.DeleteSyllabus.as_view(), name='delete-syllabus'),
+
+    path('syllabus/<int:id>/edit/', views.create_edit_class, name='edit_syllabus'),
 
     path('create-class/', views.create_edit_class, name='class-syllabus')
 ]

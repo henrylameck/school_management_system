@@ -16,7 +16,7 @@ class ClassForm(forms.ModelForm):
 
     class Meta:
         model = Class
-        fields = ('name', 'stream', 'seat','class_teacher', 'leaders',)
+        fields = ('name', 'stream', 'seat','class_teacher',)
 
 
 class SubjectForm(forms.ModelForm):

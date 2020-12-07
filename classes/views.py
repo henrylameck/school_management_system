@@ -12,7 +12,6 @@ from .forms import ClassForm, StreamForm, SubjectForm, ClassSyllabusForm, ClassS
 
 
 
-
 class CreateStream(LoginRequiredMixin, UserPassesTestMixin, FormView):
     template_name = 'classes/create_stream.html'
     form_class = StreamForm
@@ -115,130 +114,29 @@ class DeleteSubject(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return reverse_lazy('classes:create-subject')
 
 
-class CreateClassSyllabus(LoginRequiredMixin, UserPassesTestMixin, FormView):
-    template_name = 'classes/create_syllabus.html'
-    form_class = ClassSyllabusForm
-
-    def test_func(self):
-        if self.request.user.role == 'master':
-            return True
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['syllabus'] = ClassSyllabus.objects.all()
-        return context
-
-    def post(self, request, *args, **kwargs):
-        form = self.form_class(data=request.POST)
-        if form.is_valid():
-            syllabus_obj = form.save(commit=False)
-            syllabus_obj.created_by = request.user
-            syllabus_obj.save()
-
-            messages.success(request, 'Success, Class Syllabus was created', extra_tags='alert alert-success')
-
-            return redirect(to='classes:create-syllabus')
-
-
-        context = {
-            'form': form,
-        }
-
-        messages.error(request, 'Errors occurred',
-                       extra_tags='alert alert-danger')
-
-        return render(request, self.template_name, context=context)
-
-
-class DeleteSyllabus(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    model = ClassSyllabus
-    template_name = 'master/comfirm_delete.html'
-
-    def test_func(self):
-        if self.request.user.role == 'master':
-            return True
-
-    def get_success_url(self):
-
-        messages.success(self.request, 'Success, Class Syllabus deleted',
-                         extra_tags='alert alert-info')
-
-        return reverse_lazy('classes:create-syllabus')
-
-
-def class_list(request):
-    classes = Class.objects.all()
-    return render(request, 'classes/class_list.html', {'classes': classes})
-
-
-def save_class_form(request, form, template_name):
-    data = dict()
-    if request.method == 'POST':
-        if form.is_valid():
-            class_obj = form.save(commit=False)
-            class_obj.created_by = request.user
-            class_obj.save()
-            data['form_is_valid'] = True
-            classes = Class.objects.all()
-            data['html_class_list'] = render_to_string('classes/includes/partial_class_list.html', {
-                'classes': classes
-            })
-        else:
-            data['form_is_valid'] = False
-    context = {'form': form}
-    data['html_form'] = render_to_string(template_name, context, request=request)
-    return JsonResponse(data)
- 
-
-def class_create(request):
-    if request.method == 'POST':
-        form = ClassForm(request.POST)
-    else:
-        form = ClassForm()
-    return save_class_form(request, form, 'classes/includes/partial_class_create.html')
-
-
-def class_update(request, pk):
-    class_s = get_object_or_404(Class, pk=pk)
-    if request.method == 'POST':
-        form = ClassForm(request.POST, instance=class_s)
-    else:
-        form = ClassForm(instance=class_s)
-    return save_class_form(request, form, 'classes/includes/partial_class_update.html')
-
-
-def class_delete(request, pk):
-    class_s = get_object_or_404(Class, pk=pk)
-    data = dict()
-    if request.method == 'POST':
-        class_s.delete()
-        data['form_is_valid'] = True
-        classes = Class.objects.all()
-        data['html_class_list'] = render_to_string('classes/includes/partial_class_list.html', {
-            'classes': classes
-        })
-    else:
-        context = {'class_s': class_s}
-        data['html_form'] = render_to_string('classes/includes/partial_class_delete.html', context, request=request)
-    return JsonResponse(data)
-
-
 def is_valid_queryparam(param):
     return param != '' and param is not None
 
-
 @login_required
 def classes_syllabus_list(request):
-    classes_syllabus = ClassSyllabus.objects.all()
+
     classes = Class.objects.all()
-    classe = request.POST.get('classe')
+    streams = Stream.objects.all()
+
+    classe = request.GET.get('classe')
+    print('classe:', classe)
+    stream = request.GET.get('stream')
+    print('stream:', stream)
 
     if is_valid_queryparam(classe) and classe != 'Choose class':
-        classes_syllabus = classes_syllabus.filter(select_class__id=classe)
+        classes = classes.filter(name=classe)
+
+    if is_valid_queryparam(stream) and stream != 'Choose Stream':
+        classes = classes.filter(stream__name=stream)
 
     context = {
         'classes':classes,
-        'classes_syllabus':classes_syllabus
+        'streams':streams,
     }
 
     template = 'classes/class_list.html'
@@ -281,7 +179,7 @@ def create_edit_class(request, id=None):
                         e.last_user = user
                     else: e.created_by = user
                     e.save()
-                return redirect('classes:class-syllabus')
+                return redirect('classes:class_list')
             else: 
                 print("formset not valid")
                 print("error ", formset.errors)

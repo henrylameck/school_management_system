@@ -23,7 +23,6 @@ class Class(models.Model):
     modified_at = models.DateTimeField(auto_now=True)
     name = models.CharField(max_length=20)
     class_teacher = models.OneToOneField(Teacher, on_delete=models.SET_NULL, null=True, blank=True)
-    leaders = models.ManyToManyField("students.StudentRegistration")
     seat = models.PositiveIntegerField(verbose_name='No of seats')
     stream = models.ForeignKey(Stream, on_delete=models.SET_NULL, null=True)
 
@@ -31,7 +30,7 @@ class Class(models.Model):
     last_user = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='class_updated_by', null=True, blank=True) # Last user username
 
     def __str__(self):
-        return "{} {}".format(self.name, self.stream)
+        return "{}".format(self.name)
 
 
 class Subject(models.Model):

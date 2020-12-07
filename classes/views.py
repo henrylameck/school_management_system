@@ -1,13 +1,16 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseForbidden, HttpResponseRedirect, Http404
 from django.template.loader import render_to_string
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.views.generic import TemplateView, FormView, CreateView, DeleteView
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse_lazy, reverse
 
 from .models import Class, Stream, Subject, ClassSyllabus
-from .forms import ClassForm, StreamForm, SubjectForm, ClassSyllabusForm
+from .forms import ClassForm, StreamForm, SubjectForm, ClassSyllabusForm, ClassSyllabusInlineFormSet
+
+
 
 
 class CreateStream(LoginRequiredMixin, UserPassesTestMixin, FormView):
@@ -218,3 +221,82 @@ def class_delete(request, pk):
         context = {'class_s': class_s}
         data['html_form'] = render_to_string('classes/includes/partial_class_delete.html', context, request=request)
     return JsonResponse(data)
+
+
+def is_valid_queryparam(param):
+    return param != '' and param is not None
+
+
+@login_required
+def classes_syllabus_list(request):
+    classes_syllabus = ClassSyllabus.objects.all()
+    classes = Class.objects.all()
+    classe = request.POST.get('classe')
+
+    if is_valid_queryparam(classe) and classe != 'Choose class':
+        classes_syllabus = classes_syllabus.filter(select_class__id=classe)
+
+    context = {
+        'classes':classes,
+        'classes_syllabus':classes_syllabus
+    }
+
+    template = 'classes/class_list.html'
+
+    return render(request, template, context)
+
+
+@login_required
+def create_edit_class(request, id=None):
+    """
+        This is an inline formset to create a new class entry along with class syllabus that can have multiple occurences.
+    """
+
+    user = request.user
+
+    if id: 
+        classes = get_object_or_404(Class, id=id)
+        print('classes:', classes)
+        class_syllabus = ClassSyllabus.objects.filter(select_class=classes)
+        formset = ClassSyllabusInlineFormSet(instance=classes)
+        if classes.created_by != request.user:
+            return HttpResponseForbidden()
+    else:
+        classes = Class(created_by=user)
+        formset = ClassSyllabusInlineFormSet(instance=classes)
+
+    if request.POST:
+        form = ClassForm(request.POST, instance=classes)
+        formset = ClassSyllabusInlineFormSet(request.POST or None,prefix='class_syllabus')
+        if form.is_valid():
+            class_form = form.save(commit=False)
+            if id:
+                class_form.last_user = user
+            formset = ClassSyllabusInlineFormSet(request.POST,prefix='class_syllabus',instance=class_form)
+            if formset.is_valid():
+                class_form.save()
+                class_syllabus = formset.save(commit=False)
+                for e in class_syllabus:
+                    if id:
+                        e.last_user = user
+                    else: e.created_by = user
+                    e.save()
+                return redirect('classes:class-syllabus')
+            else: 
+                print("formset not valid")
+                print("error ", formset.errors)
+                print("non form error ", formset.non_form_errors())
+        else: print("form not valid")
+    else:
+        form = ClassForm(instance=classes)
+        formset = ClassSyllabusInlineFormSet(instance=classes, prefix='class_syllabus')
+
+    variables = {
+        'form': form,
+        'formset': formset
+    }
+
+    template = 'classes/class_syllabus.html'
+
+    return render(request, template, variables)
+	

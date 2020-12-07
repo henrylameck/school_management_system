@@ -58,7 +58,7 @@ ACTION_TAKEN = (
 )
 
 
-class TeacherRegistration(models.Model):
+class Teacher(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)   
 

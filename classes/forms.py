@@ -1,5 +1,8 @@
 from django import forms
 
+from django.forms.formsets import formset_factory
+from django.forms.models import inlineformset_factory
+
 from .models import Class, Stream, Subject, ClassSyllabus
 
 
@@ -13,7 +16,7 @@ class ClassForm(forms.ModelForm):
 
     class Meta:
         model = Class
-        fields = ('name', 'stream', 'seat', 'leaders',)
+        fields = ('name', 'stream', 'seat','class_teacher', 'leaders',)
 
 
 class SubjectForm(forms.ModelForm):
@@ -27,4 +30,9 @@ class ClassSyllabusForm(forms.ModelForm):
 
     class Meta:
         model = ClassSyllabus
-        fields = ('select_class', 'subjects', 'components', )
+        fields = ('id','subjects', 'select_class', 'theory', 'assignment', 'practical', 'project',)
+
+
+ClassSyllabusFormSet = formset_factory(ClassSyllabusForm, extra=0)
+
+ClassSyllabusInlineFormSet = inlineformset_factory(Class, ClassSyllabus, fields = ('id','subjects', 'theory', 'assignment', 'practical', 'project',), extra=1)

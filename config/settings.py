@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'classes',
     'students',
     'teachers',
+    'examination',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -46,6 +47,7 @@ INSTALLED_APPS = [
     'django_countries',
     'multiselectfield',
     'formtools',
+    'tinymce',
 ]
 
 MIDDLEWARE = [
@@ -177,3 +179,34 @@ else:
     STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+
+### TINYMCE SETTINGS - START ###
+
+TINYMCE_DEFAULT_CONFIG = {
+	'height': 360,
+	'width': '100%',
+	'cleanup_on_startup': True,
+	'custom_undo_redo_levels': 20,
+	'selector': 'textarea',
+	'forced_root_block_attrs': {
+		'class': 'mycontent',
+		},
+    'theme': 'modern',
+    'plugins': '''
+            textcolor save link image media preview
+            table lists fullscreen  insertdatetime  nonbreaking
+            searchreplace wordcount 
+            fullscreen autolink lists  print  hr
+            ''',
+    'toolbar1': '''
+            fullscreen preview bold italic underline |
+            fontsizeselect  | forecolor backcolor | alignleft alignright |
+            aligncenter alignjustify | indent outdent | bullist numlist table |
+            | link |
+            ''',
+    'contextmenu': 'formats | link image',
+    'menubar': False,
+    'statusbar': True,
+	}
+	
+### TINYMCE SETTINGS - END ###

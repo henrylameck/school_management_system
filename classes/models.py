@@ -47,6 +47,15 @@ class Subject(models.Model):
         return "{} ({})".format(self.name, self.short_name)
 
 
+class SubjectPart(models.Model):
+    name = models.CharField(max_length=100, blank=True, null=True)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, blank=True, null=True)
+    description = models.CharField(max_length=200, blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+
 COMPONENTS =(
     ('theory', 'Theory'),
     ('practical', 'Practical'),

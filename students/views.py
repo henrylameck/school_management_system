@@ -10,6 +10,7 @@ from django.core.files.storage import FileSystemStorage
 from django.forms import modelformset_factory
 from django.contrib import messages
 from django.forms.models import construct_instance
+from django.contrib.auth.decorators import login_required
 
 from .forms import *
 from .models import *
@@ -160,3 +161,93 @@ def student_create(request):
     else:
         form = StudentAdmissionForm()
     return save_student_form(request, form, 'students/includes/partial_student_create.html')
+
+
+@login_required
+def create_edit_discipline(request, id=None):
+	"""
+		This is an inline formset to create a new discipline entry along with discipline details that can have multiple occurences.
+	"""
+ 
+	user = request.user
+	
+	if id: 
+		discipline = get_object_or_404(Disciplines, id=id)
+		discipline_details = Disciplines_Details.objects.filter(discipline=discipline)
+		formset = DisciplineDetailsInlineFormSet(instance=discipline)
+		if discipline.created_by != request.user:
+			return HttpResponseForbidden()
+	else:
+		discipline = Disciplines(created_by=user)
+		formset = DisciplineDetailsInlineFormSet(instance=discipline)
+	
+	if request.POST:
+		form = DisciplineForm(request.POST, instance=discipline)
+		formset = DisciplineDetailsInlineFormSet(request.POST,prefix='discipline_detail')
+		if form.is_valid():
+			discipline_form = form.save(commit=False)
+			if id:
+				discipline_form.last_user = user
+			formset = DisciplineDetailsInlineFormSet(request.POST,prefix='discipline_detail',instance=discipline_form)
+			if formset.is_valid():
+				discipline_form.save()
+				discipline_details = formset.save(commit=False)
+				for e in discipline_details:
+					if id:
+						e.last_user = user
+					else: e.created_by = user
+					e.save()
+				return redirect('students:disciplines_list')
+			else: 
+				print("formset not valid")
+				print("error ", formset.errors)
+				print("non form error ", formset.non_form_errors())
+		else: print("form not valid")
+	else:
+		form = DisciplineForm(instance=discipline)
+		formset = DisciplineDetailsInlineFormSet(instance=discipline, prefix='discipline_detail')
+	
+	variables = {
+		'form': form,
+		'formset': formset
+	}
+	
+	template = 'students/disciplines/discipline_form.html'
+
+	return render(request, template, variables)
+
+
+@login_required
+def disciplines_list(request):
+	classe_obj_list = Class.objects.all()
+	student_obj_list = StudentAdmission.objects.filter(class_name__in=classe_obj_list)
+	disciplines_obj_list = Disciplines.objects.filter(student__in=student_obj_list)
+	disciplines_type_obj_list = Discipline_type.objects.all().only('sanction') # get all discipline types
+	
+	discipline_type_filter = request.POST.get('sanction')
+	student_fname_filter = request.POST.get('fname')
+	student_lname_filter = request.POST.get('lname')
+	student_classe_filter = request.POST.get('classe')
+	fact_date_filter = request.POST.get('fact_date')
+	
+	# Setup of the form filter id="discipline_list_filter" in student/templates/disciplines.html 
+	if discipline_type_filter:
+		disciplines_obj_list = disciplines_obj_list.filter(type__id=discipline_type_filter)
+	if student_fname_filter:
+		disciplines_obj_list = disciplines_obj_list.filter(student__student__personal_details__first_name__icontains=student_fname_filter)
+	if student_lname_filter :
+		disciplines_obj_list = disciplines_obj_list.filter(student__student__personal_details__last_name__icontains=student_lname_filter)
+	if student_classe_filter:
+		disciplines_obj_list = disciplines_obj_list.filter(student__class_name__id=student_classe_filter)
+	if fact_date_filter:
+		disciplines_obj_list = disciplines_obj_list.filter(fact_date=fact_date_filter)
+	
+	variables = {
+		'disciplines_obj_list': disciplines_obj_list, 
+		'classe_obj_list':classe_obj_list, 
+		'disciplines_type_obj_list':disciplines_type_obj_list, 
+	}
+	
+	template = 'students/disciplines/disciplines.html'
+	
+	return render(request, template, variables)

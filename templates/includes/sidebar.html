@@ -19,8 +19,6 @@
                             <li class="sidebar-item"><a href="{% url 'master:create-department' %}" class="sidebar-link"><i class="mdi mdi-delete"></i><span class="hide-menu"> Manage Departments </span></a></li>
                             <li class="sidebar-item"><a href="{% url 'classes:create-stream' %}" class="sidebar-link"><i class="mdi mdi-note-plus"></i><span class="hide-menu"> Manage Streams </span></a></li>
                             <li class="sidebar-item"><a href="{% url 'classes:create-subject' %}" class="sidebar-link"><i class="mdi mdi-note-plus"></i><span class="hide-menu"> Manage Subjects </span></a></li>
-                            <li class="sidebar-item"><a href="{% url 'classes:class-syllabus' %}" class="sidebar-link"><i class="mdi mdi-note-plus"></i><span class="hide-menu"> Create Classes Syllabus</span></a></li>
-                            
                             <li class="sidebar-item"><a href="{% url 'classes:class_list' %}" class="sidebar-link"><i class="mdi mdi-select"></i><span class="hide-menu"> Manage class syllabus </span></a></li>
                             <li class="sidebar-item"><a href="{% url 'users:create-staff' %}" class="sidebar-link"><i class="mdi mdi-settings"></i><span class="hide-menu"> Users/Staffs </span></a></li>
                             <li class="sidebar-item"><a href="#" class="sidebar-link"><i class="mdi mdi-settings"></i><span class="hide-menu"> Master Reports </span></a></li>
@@ -32,9 +30,7 @@
                             <li class="sidebar-item"><a href="{% url 'students:student-registration' %}" class="sidebar-link"><i class="mdi mdi-delete"></i><span class="hide-menu"> Add student </span></a></li>
                             <li class="sidebar-item"><a href="{% url 'students:student_list' %}" class="sidebar-link"><i class="mdi mdi-delete"></i><span class="hide-menu"> Class Register </span></a></li>
                             <li class="sidebar-item"><a href="#" class="sidebar-link"><i class="mdi mdi-delete"></i><span class="hide-menu"> Class Transfer </span></a></li>
-                            <li class="sidebar-item"><a href="#" class="sidebar-link"><i class="mdi mdi-delete"></i><span class="hide-menu"> Promotion </span></a></li>
-                            <li class="sidebar-item"><a href="#" class="sidebar-link"><i class="mdi mdi-delete"></i><span class="hide-menu"> Termination </span></a></li>
-                            <li class="sidebar-item"><a href="#" class="sidebar-link"><i class="mdi mdi-delete"></i><span class="hide-menu"> Discipline </span></a></li>
+                            <li class="sidebar-item"><a href="{% url 'students:disciplines_list' %}" class="sidebar-link"><i class="mdi mdi-delete"></i><span class="hide-menu"> Discipline </span></a></li>
                             <li class="sidebar-item"><a href="#" class="sidebar-link"><i class="mdi mdi-delete"></i><span class="hide-menu"> Attendance </span></a></li>
                             <li class="sidebar-item"><a href="#" class="sidebar-link"><i class="mdi mdi-delete"></i><span class="hide-menu"> Reports </span></a></li>
                         </ul>

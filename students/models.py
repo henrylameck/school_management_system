@@ -262,7 +262,7 @@ class StudentAdmission(models.Model):
     roll = models.CharField(max_length=50, default=random_string)
 
     def __str__(self):
-        return self.reg_no
+        return self.student.personal_details.first_name + ' ' + self.student.personal_details.middle_name + ' ' + self.student.personal_details.last_name
 
 
 class Attendances(models.Model):
@@ -293,9 +293,9 @@ class Attendances(models.Model):
 class Discipline_type(models.Model):	
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
-    created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True)
+    created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True) 
 
-    punishment = models.CharField(max_length=100, null=True)
+    sanction = models.CharField(max_length=100, null=True)
     start_date = models.BooleanField(default=True)
     end_date = models.BooleanField(default=True)
     start_time = models.BooleanField(default=True)
@@ -306,10 +306,10 @@ class Discipline_type(models.Model):
     comment = models.CharField(max_length=255, null=True, blank=True) # Free text
 
     def __str__(self):
-        return '{0}'.format(self.punishment)
+        return '{0}'.format(self.sanction)
 
     class Meta:
-        ordering = ('punishment',)
+        ordering = ('sanction',)
         verbose_name = "Discipline's type"
         verbose_name_plural = "Discipline's types"
 
@@ -329,12 +329,13 @@ class Disciplines(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True)
 
     type = models.ForeignKey(to='Discipline_type', on_delete=models.SET_NULL, verbose_name='discipline_type', null=True, blank=True, default=1)
-    student = models.ForeignKey(StudentRegistration, on_delete=models.CASCADE, verbose_name='student_discipline')
+    student = models.ForeignKey(StudentAdmission, on_delete=models.CASCADE, verbose_name='student_discipline')
     motif = models.TextField(null=True, blank=True)
     fact_date = models.DateField(null=True, blank=True, default=date.today)
     status = models.CharField(max_length=200, choices=STATUS, default='Active', null=True, blank=True)
     location = models.CharField(max_length=100, null=True, blank=True) 
     comment = models.CharField(max_length=250, null=True, blank=True) # Free text
+    last_user = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='discipline_updated_by', null=True, blank=True) # Last user username
 
 
     def __str__(self):

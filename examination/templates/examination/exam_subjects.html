@@ -1,0 +1,237 @@
+{% extends 'base.html' %}
+{% load static i18n widget_tweaks %}
+
+{% block stylesheet %}
+
+<style>
+    .select2-container--default .select2-selection--multiple .select2-selection__choice{
+        background-color:blue;
+    }
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove{
+        color: white;
+    }
+    td, th {
+        border: 1px solid #7f7f81;
+        text-align: left;
+        height: 30px;
+        width: auto;
+    }
+    select, input {
+        height: 30px;
+        width: auto;
+        border: none
+    }
+</style>
+
+{% endblock stylesheet %}
+
+{% block content %}
+
+{{ form.media }}
+
+<div class="container"> 
+	<div class="card">
+        <div class="card-header bg-primary">
+            <h3 class="text-light">Create Exam Subjects</h3>
+        </div>
+		<div class="card-body"> 
+		<form method="post">{% csrf_token %}
+			
+			{{ form.non_field_errors }}
+			
+			{% for hidden_field in form.hidden_fields %}
+				{{ hidden_field.errors }}
+				{{ hidden_field }}
+			{% endfor %}
+			<div class="mb-3 text-primary">
+                <h4>Create Exam</h4>
+            </div>
+			<div class="row">
+				<div class="col-md-4">
+					<div class="form-group">
+                        <div class="form-group sanction-element">
+                            {{ form.name.label_tag }}
+                            {% render_field form.name class="form-control" %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <div class="form-group sanction-element">
+                            {{ form.select_class.label_tag }}
+                            {% render_field form.select_class class="form-control select2" %}
+                            {% if form.select_class.help_text %}
+                                <small class="form-text text-muted">{{ form.select_class.help_text }}</small>
+                            {% endif %}
+
+                       
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        {{ form.enter_code.label_tag }}
+                        {% render_field form.enter_code class="form-control" %}
+                    </div>
+                </div>
+			</div>
+			<div class="row">
+				<div class="col-md-4">
+					<div class="form-group">
+                        {{ form.select_term.label_tag }}
+						{% render_field form.select_term class="form-control select2" data-style="btn btn-outline-danger" data-live-search="true" %}
+						{% if form.select_term.help_text %}
+							<small class="form-text text-muted">{{ form.select_term.help_text }}</small>
+                        {% endif %}
+					</div>
+				</div>	
+			</div>
+			
+        {{ formset.management_form }}	
+		<fieldset>
+            {% for form in formset %}
+            <div class="mt-3 mb-3">
+                <h4 class="text-primary">Add Subjects</h4>
+            </div>
+            {{ form.id  }}
+            <div class="myformset table-responsive">
+                <table class="custom-table">
+                    <thead class="table-warning">
+                        <tr>
+                            <th class="text-center">No.</th>
+                            <th class="text-center">subject</th>
+                            <th class="text-center">Assign. <br>marks min.</th>
+                            <th class="text-center">Assign. <br>marks max.</th>
+                            <th class="text-center">Theory <br>marks min.</th>
+                            <th class="text-center">Theory <br>marks max.</th>
+                            <th class="text-center">Prac. <br>marks min.</th>
+                            <th class="text-center">Prac. <br>marks max.</th>
+                            <th class="text-center">Project <br>marks min.</th>
+                            <th class="text-center">Project <br>marks max.</th>
+                            <th class="text-center">Total <br>marks max</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-center">{{forloop.counter}}</td>
+                            <td>{{form.subject}}
+                                {% if form.subject.help_text %}
+                                    <small class="form-text text-muted">{{ form.subject.help_text }}</small>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">{{form.assignment_marks_min}}</td>
+                            <td class="text-center">{{form.assignment_marks_max}}</td>
+                            <td class="text-center">{{form.theory_marks_min}}</td>
+                            <td class="text-center">{{form.theory_marks_max}}</td>
+                            </td>
+                            <td class="text-center">{{form.practical_marks_min}}</td>
+                            <td class="text-center">{{form.practical_marks_max}}</td>
+                            <td class="text-center">{{form.project_marks_min}}</td>
+                            <td class="text-center">{{form.project_marks_max}}</td>
+                            <td class="text-center">{{form.total_marks_max}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                {% if form.instance.pk %}
+					{% render_field form.DELETE class="form-check-input" %}
+					<!-- <label class="form-check-label" for="delete"> -->
+						<!-- {% trans "Delete" %} -->
+					<!-- </label> -->
+                {% endif %}
+                
+            </div>
+            {% endfor %}
+		</fieldset>
+			<div class="row my-3">
+				<div class="col">
+					<button type="submit" class="btn btn-primary">Submit</button>
+					<a class="btn btn-secondary" href="{% url 'classes:class-syllabus' %}" role="button">{% trans 'Cancel' %}</a>
+				</div>
+			</div>
+		</form>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+
+
+{% block javascript %}
+
+{% comment %}
+	Add two buttons (delete/add) to the inlineformset.
+	This allows to add occurence of a sanction
+{% endcomment %}
+
+<script type="text/javascript" src="{% static 'classes/js/jquery.formset.js' %}"></script>
+<script>
+    $('.myformset').formset({
+        addText: '<i class="fas fa-plus-circle"></i> Add subject',
+		addCssClass: 'btn btn-success my-1 sanction-element',
+		deleteCssClass: 'btn btn-danger text-light mr-2 mt-2 mb-3',
+        deleteText: '<i class="fas fa-trash"></i> Delete',
+		prefix: '{{ formset.prefix }}',
+    });
+</script>
+
+{% comment %} 
+	To style only selects with the selectpicker class 
+{% endcomment %}
+<script>
+	$('.selectpicker').selectpicker();
+</script>
+
+<script>
+    //***********************************//
+    // For select 2
+    //***********************************//
+    $(".select2").select2();
+
+    /*colorpicker*/
+    $('.demo').each(function() {
+    //
+    // Dear reader, it's actually very easy to initialize MiniColors. For example:
+    //
+    //  $(selector).minicolors();
+    //
+    // The way I've done it below is just for the demo, so don't get confused
+    // by it. Also, data- attributes aren't supported at this time...they're
+    // only used for this demo.
+    //
+    $(this).minicolors({
+            control: $(this).attr('data-control') || 'hue',
+            position: $(this).attr('data-position') || 'bottom left',
+
+            change: function(value, opacity) {
+                if (!value) return;
+                if (opacity) value += ', ' + opacity;
+                if (typeof console === 'object') {
+                    console.log(value);
+                }
+            },
+            theme: 'bootstrap'
+        });
+
+    });
+    /*datwpicker*/
+    jQuery('.mydatepicker').datepicker();
+    jQuery('#datepicker-autoclose').datepicker({
+        autoclose: true,
+        todayHighlight: true
+    });
+    var quill = new Quill('#editor', {
+        theme: 'snow'
+    });
+
+</script>
+
+<script src="{% static 'assets/libs/inputmask/dist/min/jquery.inputmask.bundle.min.js' %}"></script>
+
+<script src="{% static 'assets/libs/jquery-asGradient/dist/jquery-asGradient.js' %}"></script>
+<script src="{% static 'assets/libs/jquery-asColorPicker/dist/jquery-asColorPicker.min.js' %}"></script>
+<script src="{% static 'assets/libs/jquery-minicolors/jquery.minicolors.min.js' %}"></script>
+<script src="{% static 'assets/libs/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>
+<script src="{% static 'assets/libs/quill/dist/quill.min.js' %}"></script>
+
+{% endblock javascript%}

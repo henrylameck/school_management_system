@@ -22,6 +22,7 @@ class ExamMaster(models.Model):
     select_class = models.ForeignKey(Class, on_delete=models.CASCADE)
     enter_code = models.CharField(max_length=50, verbose_name='Enter Examination Code')
     select_term = models.CharField(max_length=50, verbose_name='Select Term', choices=SELECT_TERM)
+    last_user = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='exam_updated_by', null=True, blank=True) # Last user username
 
     def __str__(self):
         return str(self.id)
@@ -104,22 +105,24 @@ class ExamMarkEntry(models.Model):
     modified_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=True)
 
-    exam_mark_master = models.ForeignKey(ExamMarkMaster, on_delete=models.CASCADE)
+    exam_subject = models.ForeignKey(ExamSubject, on_delete=models.CASCADE, blank=True, null=True)
+
+    exam_master = models.ForeignKey(ExamMaster, on_delete=models.CASCADE, blank=True, null=True)
     student = models.ForeignKey(StudentAdmission, on_delete=models.CASCADE)
-    theory_mark = models.CharField(max_length=18, verbose_name='Theory Marks')
-    assignment_mark = models.CharField(max_length=18, verbose_name='Assignment Marks')
-    practical_mark = models.CharField(max_length=18, verbose_name='Practical Marks')
-    project_mark = models.CharField(max_length=18, verbose_name='Project Marks')
-    subject_part = models.ForeignKey(SubjectPart, verbose_name='Subject Part', on_delete=models.CASCADE)
+    theory_mark = models.CharField(max_length=18, verbose_name='Theory Marks', blank=True, null=True)
+    assignment_mark = models.CharField(max_length=18, verbose_name='Assignment Marks', blank=True, null=True)
+    practical_mark = models.CharField(max_length=18, verbose_name='Practical Marks', blank=True, null=True)
+    project_mark = models.CharField(max_length=18, verbose_name='Project Marks', blank=True, null=True)
+    subject_part = models.ForeignKey(SubjectPart, verbose_name='Subject Part', on_delete=models.CASCADE, blank=True, null=True)
     total = models.CharField(max_length=50, verbose_name='Total', blank=True, null=True)
 
     def __str__(self):
-        return self.student
+        return str(self.student)
 
 
-    def save(self, *args, **kwargs): 
-        self.total = self.theory_mark + self.assignment_mark + self.project_mark + self.practical_mark
-        super(ExamMarkEntry, self).save(*args, **kwargs) 
+    # def save(self, *args, **kwargs): 
+    #     self.total = self.theory_mark + self.assignment_mark + self.project_mark + self.practical_mark
+    #     super(ExamMarkEntry, self).save(*args, **kwargs) 
 
 
 class ExamMarkEntryPart(models.Model):

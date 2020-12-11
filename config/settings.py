@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'multiselectfield',
     'formtools',
     'tinymce',
+    'import_export',
 ]
 
 MIDDLEWARE = [
@@ -169,6 +170,7 @@ LOGIN_URL = 'users:login'
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 if not DEBUG:
     STATICFILES_DIRS = [BASE_DIR+"/static", ]
@@ -210,3 +212,7 @@ TINYMCE_DEFAULT_CONFIG = {
 	}
 	
 ### TINYMCE SETTINGS - END ###
+
+## DJANGO IMPORT EXPORT SETTINGS ##
+
+IMPORT_EXPORT_USE_TRANSACTIONS = True

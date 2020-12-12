@@ -87,7 +87,6 @@ class CreateSubject(LoginRequiredMixin, UserPassesTestMixin, FormView):
 
             return redirect(to='classes:create-subject')
 
-
         context = {
             'form': form,
         }

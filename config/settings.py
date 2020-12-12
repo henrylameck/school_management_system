@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'classes',
     'students',
     'teachers',
+    'reception',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -46,6 +47,7 @@ INSTALLED_APPS = [
     'django_countries',
     'multiselectfield',
     'formtools',
+    'phonenumber_field',
 ]
 
 MIDDLEWARE = [

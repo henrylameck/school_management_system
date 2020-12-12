@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
+from tablib import Dataset
+from django.contrib import messages
 
 from .resources import ExamMarkEntryResource
 from .models import *
@@ -31,8 +33,8 @@ def export(request):
             )
         )
 
-        response = HttpResponse(dataset.csv, content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="exam.csv"'
+        response = HttpResponse(dataset.xls, content_type='application/vnd.ms-excel')
+        response['Content-Disposition'] = 'attachment; filename="exam.xls"'
         return response
 
     context = {
@@ -41,6 +43,35 @@ def export(request):
         'exams':exams,
     }
     return render(request, 'examination/export_exam.html', context)
+
+
+def import_exam(request):
+    if request.method == 'POST':
+        exam_resource = ExamMarkEntryResource()
+        dataset = Dataset()
+        new_exam = request.FILES['importExam']
+
+        if not new_exam.name.endswith('.xls'):
+            messages.error(request, 'File format format not allowed',
+                       extra_tags='alert alert-danger')
+            return render(request, 'examination/import_exam.html')
+
+        print('new_exam:', new_exam)
+
+        imported_data = dataset.load(new_exam.read(),format='xls')
+        result = exam_resource.import_data(dataset, dry_run=True)                                                   
+
+        if not result.has_errors():
+            # Import now
+            exam_resource.import_data(dataset, dry_run=False)
+            
+            messages.success(request, 'Success, Staff created',
+                             extra_tags='alert alert-success')
+        else:
+            messages.error(request, 'Errors occurred',
+                       extra_tags='alert alert-danger')
+
+    return render(request, 'examination/import_exam.html')  
 
 
 

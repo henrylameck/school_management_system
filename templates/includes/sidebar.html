@@ -35,6 +35,16 @@
                             <li class="sidebar-item"><a href="#" class="sidebar-link"><i class="mdi mdi-delete"></i><span class="hide-menu"> Reports </span></a></li>
                         </ul>
                     </li>
+                    <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-bank"></i><span class="hide-menu">Examination </span></a>
+                        <ul aria-expanded="false" class="collapse  first-level">
+                            <li class="sidebar-item"><a href="{% url 'examination:exam-create-edit' %}" class="sidebar-link"><i class="mdi mdi-delete"></i><span class="hide-menu"> Create Exam </span></a></li>
+                            <li class="sidebar-item"><a href="" class="sidebar-link"><i class="mdi mdi-delete"></i><span class="hide-menu"> Create Grade </span></a></li>
+                            <li class="sidebar-item"><a href="#" class="sidebar-link"><i class="mdi mdi-delete"></i><span class="hide-menu"> Create Division </span></a></li>
+                            <li class="sidebar-item"><a href="{% url 'examination:export_exam' %}" class="sidebar-link"><i class="mdi mdi-delete"></i><span class="hide-menu"> Download Exam Mark Sheet </span></a></li>
+                            <li class="sidebar-item"><a href="#" class="sidebar-link"><i class="mdi mdi-delete"></i><span class="hide-menu"> Import Exam Marks </span></a></li>
+                            <li class="sidebar-item"><a href="#" class="sidebar-link"><i class="mdi mdi-delete"></i><span class="hide-menu"> Progress card Generation </span></a></li>
+                        </ul>
+                    </li>
                 </ul>
             </nav>
             <!-- End Sidebar navigation -->

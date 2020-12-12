@@ -1,38 +1,47 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h3>Export Data</h3>
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <p>Please select Enter the detail the hit Export.</p>
-    <label for="">Select class</label>
-    <select name="select_class" class="form-control my-3">
-        <option value="">please select</option>
-        {% for classe in classes %}
-        <option value="{{classe.id}}">{{classe}}</option>
-        {% endfor %}
-      </select>
-    <label for="">Select Subject</label>
-    <select name="subject" class="form-control my-3">
-        <option value="">please select</option>
-        {% for subject in subjects %}
-        <option value="{{subject.id}}">{{subject}}</option>
-        {% endfor %}
-    </select>
-    <label for="">Select examination</label>
-    <select name="exam" class="form-control my-3">
-        <option value="">please select</option>
-        {% for exam in exams %}
-        <option value="{{exam.name}}">{{exam.name}}</option>
-        {% endfor %}
-    </select>
-    <label for="">Select Semister</label>
-    <select name="semister" class="form-control my-3">
-        <option value="">please select</option>
-        <option value="term_one">Term 1</option>
-        <option value="term_two">Term 2</option>
-    </select>
-
-    <button class="btn btn-primary" type="submit">Export</button>
-  </form>
-  {% endblock %} 
+<div class="row">
+    <div class="col-md-6 col-off-6">
+        <div class="card">
+            <div class="card-header bg-primary">
+                <h3 class="text-light">Download Exam Mark Sheet</h3>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <p class="text-primary">Please Enter all details then hit Download.</p>
+                    <label for="">Select class</label>
+                    <select name="select_class" class="form-control my-3">
+                        <option value="">please select</option>
+                        {% for classe in classes %}
+                        <option value="{{classe.id}}">{{classe}}</option>
+                        {% endfor %}
+                      </select>
+                    <label for="">Select Subject</label>
+                    <select name="subject" class="form-control my-3">
+                        <option value="">please select</option>
+                        {% for subject in subjects %}
+                        <option value="{{subject.id}}">{{subject}}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="">Select examination</label>
+                    <select name="exam" class="form-control my-3">
+                        <option value="">please select</option>
+                        {% for exam in exams %}
+                        <option value="{{exam.name}}">{{exam.name}}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="">Select Semister</label>
+                    <select name="semister" class="form-control my-3">
+                        <option value="">please select</option>
+                        <option value="term_one">Term 1</option>
+                        <option value="term_two">Term 2</option>
+                    </select>
+                
+                    <button class="btn btn-primary" type="submit">Download</button>
+                  </form>
+            </div>
+        </div>
+    </div>
+</div>  {% endblock %} 

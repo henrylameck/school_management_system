@@ -10,10 +10,11 @@ class ExamMarkEntryResource(resources.ModelResource):
     assignment_mark = Field(attribute='assignment_mark', column_name='ASSIGNMENT MARK',)
     practical_mark = Field(attribute='practical_mark', column_name='PRACTICAL MARK',)
     project_mark = Field(attribute='project_mark', column_name='PROJECT MARK',)
+    id = Field(attribute='id', column_name='ID')
 
     class Meta:
         model = ExamMarkEntry
         skip_unchanged = True
         report_skipped = False
         fields = ()
-        export_order = ('student_name','theory_mark', 'assignment_mark', 'practical_mark', 'project_mark',)
+        export_order = ('id','student_name','theory_mark', 'assignment_mark', 'practical_mark', 'project_mark',)

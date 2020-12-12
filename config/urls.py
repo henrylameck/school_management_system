@@ -11,7 +11,12 @@ urlpatterns = [
     path('class/', include('classes.urls', namespace='classes')),
     path('student/', include('students.urls', namespace='students')),
     path('teacher/', include('teachers.urls', namespace='teachers')),
+<<<<<<< HEAD
     path('reception/', include('reception.urls', namespace='reception')),
+=======
+    path('tinymce/', include('tinymce.urls')),
+    path('examination/', include('examination.urls', namespace='examination')),
+>>>>>>> 558c88de9323bb2971b7dc80fe7a05abfd6f0701
 
     path('password_change/', auth_views.PasswordChangeView.as_view(), name='password_change'),
     path('password_change/done/', auth_views.PasswordChangeDoneView.as_view(), name='password_change_done'),

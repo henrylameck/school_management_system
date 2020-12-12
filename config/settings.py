@@ -33,10 +33,8 @@ INSTALLED_APPS = [
     'classes',
     'students',
     'teachers',
-    'reception',
-
+    'examination',
     'django.contrib.admin',
-    'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -48,6 +46,8 @@ INSTALLED_APPS = [
     'multiselectfield',
     'formtools',
     'phonenumber_field',
+    'tinymce',
+    'import_export',
 ]
 
 MIDDLEWARE = [
@@ -169,6 +169,7 @@ LOGIN_URL = 'users:login'
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 if not DEBUG:
     STATICFILES_DIRS = [BASE_DIR+"/static", ]
@@ -179,3 +180,38 @@ else:
     STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+
+### TINYMCE SETTINGS - START ###
+
+TINYMCE_DEFAULT_CONFIG = {
+	'height': 360,
+	'width': '100%',
+	'cleanup_on_startup': True,
+	'custom_undo_redo_levels': 20,
+	'selector': 'textarea',
+	'forced_root_block_attrs': {
+		'class': 'mycontent',
+		},
+    'theme': 'modern',
+    'plugins': '''
+            textcolor save link image media preview
+            table lists fullscreen  insertdatetime  nonbreaking
+            searchreplace wordcount 
+            fullscreen autolink lists  print  hr
+            ''',
+    'toolbar1': '''
+            fullscreen preview bold italic underline |
+            fontsizeselect  | forecolor backcolor | alignleft alignright |
+            aligncenter alignjustify | indent outdent | bullist numlist table |
+            | link |
+            ''',
+    'contextmenu': 'formats | link image',
+    'menubar': False,
+    'statusbar': True,
+	}
+	
+### TINYMCE SETTINGS - END ###
+
+## DJANGO IMPORT EXPORT SETTINGS ##
+
+IMPORT_EXPORT_USE_TRANSACTIONS = True

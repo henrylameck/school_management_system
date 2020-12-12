@@ -1,7 +1,10 @@
 from django import forms
 from datetime import date
 
-from .models import PersonalDetails, StudentAdmission, PersonalContactDetail, TransportAllocation, HostelAllocation, Qualification,FeeCollection
+from django.forms.formsets import formset_factory
+from tinymce.widgets import TinyMCE
+
+from .models import *
 
 
 class PersonalDetailsForm(forms.ModelForm):
@@ -34,16 +37,6 @@ class StudentAdmissionForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(StudentAdmissionForm, self).__init__(*args, **kwargs)
         self.fields['roll'].disabled = True
-
-    # def clean_roll(self):
-    #     new_student = self.cleaned_data['student']
-    #     students = StudentAdmission.objects.all()
-
-    #     for std in students:
-    #         old_students = std.student
-    #     if new_student == old_students:
-    #         raise forms.ValidationError('The student already admitted')
-    #     return roll
 
 
 
@@ -125,3 +118,31 @@ class FeeCollectionForm(forms.ModelForm):
             if not cheque:
                 raise forms.ValidationError('The field is Required')
             return cheque
+
+
+class DisciplineForm(forms.ModelForm):
+	class Meta:
+		model = Disciplines
+		# template_name = "core/discipline_form.html"
+		fields = ['type','fact_date' , 'student', 'status', 'created_by', 'location', 'motif', 'comment']
+		
+
+		
+class DisciplineDetailsForm(forms.ModelForm):
+	class Meta:
+		model = Disciplines_Details
+		fields = [
+			'start_date',
+			'start_time',
+			'finish_date',
+			'finish_time',
+			'description'
+		]
+		
+		widgets = {
+			'description': forms.Textarea(attrs={'rows': 1}),
+		}
+		
+DisciplineDetailsFormSet = formset_factory(DisciplineDetailsForm, extra=0)
+
+DisciplineDetailsInlineFormSet = forms.inlineformset_factory(Disciplines, Disciplines_Details, fields = ('id','start_date','start_time','finish_date','finish_time','description'), extra=1)

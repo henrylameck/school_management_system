@@ -1,75 +1,73 @@
+
 {% extends 'base.html' %}
-{% load static %}
 
-{% block javascript %}
-
-<script src="{% static 'classes/js/classes.js' %}"></script>
-
-{% endblock %}
 
 {% block content %}
-  <p>
-    <button type="button" class="btn btn-primary js-create-class" data-url="{% url 'classes:class_create' %}">
-      <i class="fa fa-plus-circle mr-2"></i>
-       New class
-    </button>
-  </p>
 
-  <div class="card">
-    <div class="card-header">
-      <h4>All Classes</h4>
-    </div>
-    <div class="card-body">
-      <table class="table" id="book-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>Seats</th>
-            <th>Stream</th>
-            <th>Created by</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for class in classes %}
-            <tr>
-              <td>{{ forloop.counter }}</td>
-              <td>{{ class.name }}</td>
-              <td>{{ class.seat }}</td>
-              <td>{{ class.stream }}</td>
-              <td>{{ class.created_by }}</td>
-              <td style="width: 150px">
-                <button type="button"
-                        class="btn btn-warning btn-sm js-update-class"
-                        data-url="{% url 'classes:class_update' class.id %}">
-                  <span class="glyphicon glyphicon-pencil"></span> Edit
-                </button>
-                <button type="button"
-                        class="btn btn-danger btn-sm js-delete-class"
-                        data-url="{% url 'classes:class_delete' class.id %}">
-                  <span class="glyphicon glyphicon-trash"></span> Delete
-                </button>
-              </td>
-            </tr>
-          {% empty %}
-            <tr>
-              <td colspan="7" class="text-center bg-warning">No classes</td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </div>
+<div class="card">
+  <form method="GET" action=".">
+	<div class="row m-3">
+		<div class="col-md-4">
+			<select class="form-control form-control-sm"  name="classe">
+			  <option selected> Choose class </option>
+			  {% for c in classes %}
+				<option value="{{c}}">{{c.name}}</option>
+			  {% endfor %}
+			</select>
+		</div>
+		<div class="col-md-4">
+			<select class="form-control form-control-sm"  name="stream">
+			  <option selected> Choose Stream </option>
+			  {% for s in streams %}
+				<option value="{{s}}">{{s.name}}</option>
+			  {% endfor %}
+			</select>
+		</div>
+		<button class="btn btn-primary mr-2" type="submit">Filter</button>
+		<a href="{% url 'classes:class_list' %}" class="btn btn-secondary mr-2">Clear</a>
+		<a href="{% url 'classes:class-syllabus' %}" class="btn btn-success"><i class="fas fa-plus-circle mr-2"></i> Create</a>
+	</div>
+  </form>
 
 
-    <!-- THE MODAL WE WILL BE USING -->
-    <div class="modal fade" id="modal-class">
-        <div class="modal-dialog">
-            <div class="modal-content">
-
-            </div>
-        </div>
-    </div>
+	<div class="card-body">
+		{% if classes|length == 0 %}
+			"Nothing found"
+		{% else %}
+			<div class="table-responsive">
+				<table class="table table-bordered" width="100%" cellspacing="0">
+					<thead>
+						<tr>
+							<th>Np.</th>
+							<th>Class</th>
+							<th>Stream</th>
+							<th>Class teacher</th>
+							<th>created By</th>
+							<th>Action</th>
+						</tr>
+					</thead>
+					<tbody>
+					{% for clc in classes %}
+					<tr>
+            <td>{{forloop.counter}}</td>
+						<td><a href="#">{{ clc.name }}</a></td>
+						<td>{{clc.stream}}</td>
+						<td>{{clc.class_teacher}}</td>
+						<td>{{clc.created_by}}</td>
+						<td class="actions">
+							<div class="btn-group btn-group-sm" role="group">
+								<a class="btn btn-outline-info btn-sm" href="{% url 'classes:edit_syllabus' clc.id %}"><i class="fas fa-pencil-alt"></i> </a>
+              </div>
+						</td>
+					</tr>
+			  {% endfor %}
+					</tbody>
+						<tr></tr>
+					<tfoot></tfoot>
+				</table>
+			</div> <!-- table-responsive - END -->
+		{% endif %}
+	</div> <!-- card-body - END -->
+</div> <!-- card - END -->
 
 {% endblock %}

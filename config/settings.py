@@ -34,6 +34,8 @@ INSTALLED_APPS = [
     'students',
     'teachers',
     'examination',
+    'reception',
+
     'django.contrib.admin',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -48,6 +50,9 @@ INSTALLED_APPS = [
     'phonenumber_field',
     'tinymce',
     'import_export',
+    'tinymce',
+    'import_export',
+    'phonenumber_field',
 ]
 
 MIDDLEWARE = [
